@@ -1,0 +1,79 @@
+## TASK 5 – Kubernetes with Minikube
+
+Environment:
+
+* OS: Ubuntu 20.04 LTS
+* Docker version:  27.5.1
+* Minikube version:  v1.36.0
+* kubectl version:  v1.33.3
+* Resources: 2 CPUs, 8GB RAM allocated to Minikube
+
+Steps Executed:
+
+1. Start Minikube
+
+---
+minikube start --driver=docker --cpus=2 --memory=4096
+minikube status
+kubectl cluster-info
+
+2. Create Deployment
+
+---
+Created deployment.yaml:
+
+* Nginx:1.24
+* Replicas: 3
+  Applied:
+  kubectl apply -f deployment.yaml
+  Verified:
+  kubectl get deployments
+  kubectl get pods -l app=nginx
+
+3. Create Service
+
+---
+Created service.yaml:
+
+* Type: NodePort
+* Port: 80
+* NodePort: 30080
+  Applied:
+  kubectl apply -f service.yaml
+  Verified:
+  kubectl get svc nginx-service
+  kubectl describe svc nginx-service
+
+4. Access Application
+
+---
+minikube service nginx-service --url
+http://192.168.49.2:30080/
+
+5. Scaling
+
+---
+kubectl scale deployment/nginx-deployment --replicas=5
+kubectl get pods -l app=nginx
+
+6. Logs & Describe
+
+---
+kubectl describe nginx-deployment-6f8d5bcb9f-4gr6w;
+kubectl nginx-deployment-6f8d5bcb9f-4gr6w;
+kubectl logs -l app=nginx --all-containers
+
+7. Rolling Update
+
+---
+kubectl set image deployment/nginx-deployment nginx=nginx:1.25
+kubectl rollout status deployment/nginx-deployment
+
+8. Cleanup
+
+---
+kubectl delete -f service.yaml
+kubectl delete -f deployment.yaml
+minikube stop
+minikube delete
+
